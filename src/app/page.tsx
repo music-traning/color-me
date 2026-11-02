@@ -656,68 +656,72 @@ function FlowSection() {
       </motion.div>
 
       {/* 診断の具体性：LINEトーク画面での診断結果イメージUI */}
-      <motion.div variants={cardRevealVariants} className="mt-10">
+      <motion.div
+        variants={cardRevealVariants}
+        className="mt-10 w-full max-w-full overflow-hidden"
+      >
         <div className="mb-4 text-center">
           <span className="inline-block rounded-full bg-secondary-lemon px-4 py-1 text-xs font-extrabold text-slate-800 shadow-clay-inset">
             💬 こんな診断カルテがLINEに届きます
           </span>
         </div>
 
-        {/* LINEトーク風モックアップコンテナ */}
-        <div className="overflow-hidden rounded-clay bg-[#DCE6F2] p-4 shadow-clay-card">
+        {/* LINEトーク風モックアップコンテナ（全体のオーバーフロー防止） */}
+        <div className="w-full max-w-full overflow-hidden rounded-clay bg-[#DCE6F2] p-3.5 shadow-clay-card">
           {/* トークヘッダー */}
-          <div className="mb-4 flex items-center justify-between rounded-2xl bg-white/95 px-4 py-2.5 shadow-sm">
-            <div className="flex items-center gap-2">
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary-dark text-white">
+          <div className="mb-4 flex min-w-0 flex-wrap items-center justify-between gap-2 rounded-2xl bg-white/95 px-3.5 py-2.5 shadow-sm">
+            <div className="flex min-w-0 items-center gap-2">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary-dark text-white">
                 <Sparkles className="h-3.5 w-3.5" />
               </span>
-              <span className="text-xs font-extrabold text-slate-800">
+              <span className="truncate text-xs font-extrabold text-slate-800">
                 ColorMe AI診断公式
               </span>
             </div>
-            <span className="rounded-full bg-secondary-mint-light px-2.5 py-0.5 text-xs font-bold text-slate-800">
-              LINEトーク画面イメージ
+            <span className="shrink-0 rounded-full bg-secondary-mint-light px-2.5 py-0.5 text-[11px] font-bold text-slate-800">
+              LINEトークイメージ
             </span>
           </div>
 
-          <div className="space-y-3.5">
+          <div className="w-full space-y-3.5 overflow-hidden">
             {/* ユーザーの送信バブル（右側） */}
-            <div className="flex justify-end">
-              <div className="max-w-[82%] rounded-2xl rounded-tr-sm bg-[#8CE99A] px-3.5 py-2.5 text-left shadow-sm">
-                <p className="flex items-center gap-2 text-base font-bold text-slate-800">
+            <div className="flex w-full justify-end">
+              <div className="max-w-[85%] rounded-2xl rounded-tr-sm bg-[#8CE99A] px-3.5 py-2.5 text-left shadow-sm">
+                <p className="flex items-center gap-2 break-words whitespace-normal text-sm font-bold text-slate-800">
                   <Camera className="h-4 w-4 shrink-0" />
                   <span>顔写真を送信しました🔒</span>
                 </p>
               </div>
             </div>
 
-            {/* AIの返信バブル（左側：カラーパレット＆おすすめコスメ） */}
-            <div className="flex items-start gap-2">
+            {/* AIの返信バブル（左側：幅制限 max-w-[90%] ＆ min-w-0 で見切れ防止） */}
+            <div className="flex w-full min-w-0 items-start gap-2">
               <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-primary-light to-primary text-white shadow-sm">
                 <Sparkles className="h-4 w-4" />
               </div>
 
-              <div className="flex-1 rounded-2xl rounded-tl-sm bg-white p-4 text-left shadow-clay">
-                <div className="flex items-center justify-between border-b border-background pb-2.5">
-                  <div>
-                    <p className="text-xs font-bold text-gray-700">
+              <div className="min-w-0 flex-1 max-w-[90%] overflow-hidden rounded-2xl rounded-tl-sm bg-white p-3.5 text-left shadow-clay">
+                {/* カルテ上部ヘッダー（折り返し対応） */}
+                <div className="flex min-w-0 flex-wrap items-start justify-between gap-1.5 border-b border-background pb-2.5">
+                  <div className="min-w-0 flex-1">
+                    <p className="break-words whitespace-normal text-xs font-bold text-gray-700">
                       あなたの4シーズン診断結果
                     </p>
-                    <p className="text-base font-extrabold text-primary-dark">
-                      🌸 イエベ春（Spring）タイプ
+                    <p className="mt-0.5 break-words whitespace-normal text-base font-extrabold leading-snug text-primary-dark">
+                      🌸 イエベ春（Spring）
                     </p>
                   </div>
-                  <span className="rounded-full bg-secondary-lemon-light px-2.5 py-1 text-xs font-bold text-slate-800">
+                  <span className="shrink-0 rounded-full bg-secondary-lemon-light px-2.5 py-0.5 text-[11px] font-bold text-slate-800">
                     多幸感コーラル
                   </span>
                 </div>
 
-                {/* 似合うカラーパレット */}
-                <div className="mt-3">
-                  <p className="mb-1.5 text-sm font-extrabold text-slate-800">
-                    🎨 あなたの魅力を引き立てる似合わせパレット
+                {/* 似合うカラーパレット（4列グリッド＋min-w-0で幅内に収める） */}
+                <div className="mt-3 min-w-0">
+                  <p className="mb-1.5 break-words whitespace-normal text-xs font-extrabold text-slate-800">
+                    🎨 似合わせカラーパレット
                   </p>
-                  <div className="flex items-center gap-2 rounded-xl bg-background p-2.5 shadow-clay-inset">
+                  <div className="grid grid-cols-4 gap-1.5 rounded-xl bg-background p-2 shadow-clay-inset">
                     {[
                       { hex: "#FF8FA3", name: "コーラル" },
                       { hex: "#FFB5A7", name: "ピーチ" },
@@ -726,13 +730,13 @@ function FlowSection() {
                     ].map((c) => (
                       <div
                         key={c.hex}
-                        className="flex flex-1 flex-col items-center gap-1"
+                        className="flex min-w-0 flex-col items-center gap-1 text-center"
                       >
                         <span
                           style={{ backgroundColor: c.hex }}
-                          className="h-7 w-7 rounded-full border-2 border-white shadow-sm"
+                          className="h-6 w-6 shrink-0 rounded-full border-2 border-white shadow-sm"
                         />
-                        <span className="text-xs font-bold text-gray-700">
+                        <span className="w-full break-words whitespace-normal text-[10px] font-bold leading-tight text-gray-700">
                           {c.name}
                         </span>
                       </div>
@@ -740,26 +744,26 @@ function FlowSection() {
                   </div>
                 </div>
 
-                {/* おすすめプチプラコスメ提案 */}
-                <div className="mt-3.5">
-                  <p className="mb-1.5 text-sm font-extrabold text-slate-800">
-                    💄 あなたに似合うプチプラコスメ提案
+                {/* おすすめプチプラコスメ提案（whitespace-normal & break-words で折り返し） */}
+                <div className="mt-3.5 min-w-0">
+                  <p className="mb-1.5 break-words whitespace-normal text-xs font-extrabold text-slate-800">
+                    💄 似合うプチプラコスメ提案
                   </p>
                   <div className="space-y-2">
                     {recommendedCosmetics.map((cosme) => (
                       <div
                         key={cosme.item}
-                        className="flex items-center gap-2.5 rounded-xl bg-[#FFF5F7] px-3 py-2.5"
+                        className="flex min-w-0 items-start gap-2 rounded-xl bg-[#FFF5F7] px-2.5 py-2"
                       >
                         <span
                           style={{ backgroundColor: cosme.swatch }}
-                          className="h-5 w-5 shrink-0 rounded-full border-2 border-white shadow-sm"
+                          className="mt-0.5 h-4 w-4 shrink-0 rounded-full border-2 border-white shadow-sm"
                         />
                         <div className="min-w-0 flex-1">
-                          <p className="text-xs font-extrabold text-primary-dark">
+                          <p className="break-words whitespace-normal text-[11px] font-extrabold text-primary-dark">
                             {cosme.brand}
                           </p>
-                          <p className="truncate text-sm font-bold text-slate-800">
+                          <p className="break-words whitespace-normal text-xs font-bold leading-snug text-slate-800">
                             {cosme.item}
                           </p>
                         </div>
