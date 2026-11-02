@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-slate-800 text-base antialiased selection:bg-primary-light selection:text-white;
+  }
+}
+
+@layer components {
+  /* =========================================================
+     モバイルファーストのベースコンテナ（PC表示時は中央固定）
+     ========================================================= */
+  .mobile-shell {
+    @apply mx-auto min-h-screen w-full max-w-md bg-background shadow-2xl overflow-x-hidden relative;
+  }
+
+  /* =========================================================
+     汎用クレイモーフィズム・ボタン基底クラス
+     タップ(active)時に外側のシャドウが縮小し、物理的に沈み込む挙動
+     ========================================================= */
+  .btn-clay {
+    @apply relative inline-flex items-center justify-center gap-2
+           rounded-full px-7 py-4 font-extrabold tracking-wide
+           shadow-clay
+           transition-[transform,box-shadow,filter] duration-150 ease-out
+           select-none cursor-pointer
+           hover:-translate-y-0.5 hover:brightness-[1.02]
+           active:translate-y-1 active:scale-[0.97] active:shadow-clay-pressed
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2;
+    box-shadow:
+      0 12px 24px -4px rgba(138, 118, 130, 0.16),
+      0 4px 10px -2px rgba(138, 118, 130, 0.08),
+      inset 0 4px 6px 0 rgba(255, 255, 255, 0.75),
+      inset 0 -5px 8px 0 rgba(0, 0, 0, 0.08);
+  }
+
+  /* Primary: コーラルピンク（メインCTAボタン：白文字が沈まない高コントラスト設計） */
+  .btn-clay-primary {
+    @apply btn-clay bg-gradient-to-b from-[#FF758B] to-[#E84862] text-white font-extrabold
+           shadow-clay-primary
+           hover:shadow-[0_16px_28px_-4px_rgba(255,107,129,0.48),0_6px_12px_-2px_rgba(255,107,129,0.24),inset_0_4px_6px_0_rgba(255,255,255,0.75),inset_0_-5px_8px_0_rgba(210,60,85,0.28)]
+           active:translate-y-1.5 active:scale-[0.97] active:shadow-clay-primary-pressed;
+  }
+
+  /* Secondary Mint: パステルミントグリーン */
+  .btn-clay-mint {
+    @apply btn-clay bg-gradient-to-b from-secondary-mint-light to-secondary-mint text-slate-800;
+    box-shadow:
+      0 12px 24px -4px rgba(93, 211, 172, 0.35),
+      0 4px 8px -2px rgba(93, 211, 172, 0.18),
+      inset 0 4px 6px 0 rgba(255, 255, 255, 0.8),
+      inset 0 -5px 8px 0 rgba(62, 168, 133, 0.2);
+  }
+
+  /* Secondary Lemon: パステルレモンイエロー */
+  .btn-clay-lemon {
+    @apply btn-clay bg-gradient-to-b from-secondary-lemon-light to-secondary-lemon text-slate-800;
+    box-shadow:
+      0 12px 24px -4px rgba(242, 213, 78, 0.38),
+      0 4px 8px -2px rgba(242, 213, 78, 0.18),
+      inset 0 4px 6px 0 rgba(255, 255, 255, 0.85),
+      inset 0 -5px 8px 0 rgba(204, 173, 35, 0.22);
+  }
+
+  /* Neutral White: オフホワイト */
+  .btn-clay-white {
+    @apply btn-clay bg-background-card text-slate-800;
+  }
+
+  /* =========================================================
+     汎用クレイモーフィズム・カードクラス
+     ========================================================= */
+  .card-clay {
+    @apply rounded-clay bg-background-card p-6 shadow-clay-card;
+  }
+}
