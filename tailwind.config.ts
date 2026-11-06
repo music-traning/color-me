@@ -2,18 +2,25 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: [
+          '"Hiragino Maru Gothic ProN"',
+          '"Hiragino Sans"',
+          '"BIZ UDPGothic"',
+          '"Meiryo"',
+          "sans-serif",
+        ],
+      },
       colors: {
         // Primary: 明るく親しみやすいコーラルピンク
         primary: {
           light: "#FF9E9E",
           DEFAULT: "#FF6B81",
-          dark: "#E8556B",
+          dark: "#D93854",
         },
         // Secondary: パステル系のミントグリーン・レモンイエロー
         secondary: {
@@ -64,30 +71,37 @@ const config: Config = {
         clay: "1.75rem",
       },
       keyframes: {
-        // 数秒おきに軽くバウンド＆脈打つCTAアテンションアニメーション
+        // 数秒おきに軽くバウンド＆脈打つCTAアテンションアニメーション（GPU合成のみ）
         "cta-attention": {
           "0%, 70%, 100%": {
-            transform: "translateY(0) scale(1)",
+            transform: "translate3d(0, 0, 0) scale(1)",
           },
           "78%": {
-            transform: "translateY(-5px) scale(1.02)",
+            transform: "translate3d(0, -5px, 0) scale(1.02)",
           },
           "86%": {
-            transform: "translateY(1px) scale(0.995)",
+            transform: "translate3d(0, 1px, 0) scale(0.995)",
           },
           "93%": {
-            transform: "translateY(-2px) scale(1.01)",
+            transform: "translate3d(0, -2px, 0) scale(1.01)",
           },
         },
         // ボタン表面をキラッと流れるツヤ（シマー効果）
         shimmer: {
-          "0%, 65%": { transform: "translateX(-120%) skewX(-20deg)" },
-          "100%": { transform: "translateX(220%) skewX(-20deg)" },
+          "0%, 65%": { transform: "translate3d(-120%, 0, 0) skewX(-20deg)" },
+          "100%": { transform: "translate3d(220%, 0, 0) skewX(-20deg)" },
+        },
+        // LCPを阻害しない（opacityを0にしない）軽量スライドアップ
+        "hero-rise": {
+          "0%": { transform: "translate3d(0, 10px, 0)" },
+          "100%": { transform: "translate3d(0, 0, 0)" },
         },
       },
       animation: {
-        "cta-attention": "cta-attention 3.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite",
+        "cta-attention":
+          "cta-attention 3.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite",
         shimmer: "shimmer 3.6s ease-in-out infinite",
+        "hero-rise": "hero-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both",
       },
     },
   },

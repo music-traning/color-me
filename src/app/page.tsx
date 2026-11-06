@@ -1,7 +1,4 @@
-"use client";
-
 import React from "react";
-import { motion, Variants } from "framer-motion";
 import {
   Sparkles,
   Camera,
@@ -21,60 +18,7 @@ import {
 } from "lucide-react";
 
 /* =========================================================
-   Framer Motion 共通アニメーション Variants
-   ========================================================= */
-const heroContainerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.14,
-      delayChildren: 0.08,
-    },
-  },
-};
-
-const heroItemVariants: Variants = {
-  hidden: { opacity: 0, y: 24 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.65,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-};
-
-const sectionRevealVariants: Variants = {
-  hidden: { opacity: 0, y: 32 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.7,
-      ease: [0.22, 1, 0.36, 1],
-      staggerChildren: 0.14,
-    },
-  },
-};
-
-const cardRevealVariants: Variants = {
-  hidden: { opacity: 0, y: 24, scale: 0.98 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: {
-      duration: 0.55,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  },
-};
-
-/* =========================================================
-   LINE登録CTAボタン共通コンポーネント
-   - font-extrabold + drop-shadow で背景グラデーションに沈まない高い視認性を確保
+   LINE登録CTAボタン共通コンポーネント（純粋なCSSアニメーションで強制リフロー・不要JSゼロ）
    ========================================================= */
 interface ClayCtaButtonProps {
   href: string;
@@ -85,39 +29,21 @@ interface ClayCtaButtonProps {
 function ClayCtaButton({ href, label, external = false }: ClayCtaButtonProps) {
   return (
     <div className="relative w-full">
-      <motion.span
+      {/* 背面のソフトなグロウ（GPU合成のみ） */}
+      <span
         aria-hidden="true"
-        className="pointer-events-none absolute inset-0 rounded-full bg-primary/35 blur-md"
-        animate={{
-          scale: [1, 1.05, 1],
-          opacity: [0.35, 0.65, 0.35],
-        }}
-        transition={{
-          duration: 2.8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
+        className="pointer-events-none absolute inset-0 rounded-full bg-primary/30 blur-md"
       />
 
+      {/* 数秒おきに軽くバウンドするラッパー */}
       <div className="animate-cta-attention hover:[animation-play-state:paused] active:[animation-play-state:paused]">
-        <motion.a
+        <a
           href={href}
           target={external ? "_blank" : undefined}
           rel={external ? "noopener noreferrer" : undefined}
-          whileHover={{ y: -2 }}
-          whileTap={{
-            y: 5,
-            scale: 0.97,
-            boxShadow:
-              "0 3px 6px -2px rgba(255, 107, 129, 0.28), 0 1px 3px -1px rgba(255, 107, 129, 0.15), inset 0 4px 8px 0 rgba(180, 40, 65, 0.3), inset 0 -2px 4px 0 rgba(255, 255, 255, 0.45)",
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 500,
-            damping: 22,
-          }}
           className="btn-clay-primary relative w-full overflow-hidden py-4 text-base font-extrabold tracking-wide text-white"
         >
+          {/* キラッと流れるツヤ（シマーエフェクト） */}
           <span
             aria-hidden="true"
             className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-transparent via-white/35 to-transparent animate-shimmer"
@@ -128,7 +54,7 @@ function ClayCtaButton({ href, label, external = false }: ClayCtaButtonProps) {
             {label}
           </span>
           <ArrowRight className="relative z-10 h-5 w-5 shrink-0 stroke-[2.5] drop-shadow-sm" />
-        </motion.a>
+        </a>
       </div>
     </div>
   );
@@ -159,19 +85,12 @@ function Header() {
           </span>
         </a>
 
-        <motion.a
+        <a
           href="#cta"
-          whileHover={{ y: -1.5 }}
-          whileTap={{
-            y: 3,
-            scale: 0.96,
-            boxShadow:
-              "0 2px 4px -1px rgba(138, 118, 130, 0.14), inset 0 3px 5px 0 rgba(0, 0, 0, 0.12)",
-          }}
-          className="rounded-full bg-gradient-to-b from-secondary-mint-light to-secondary-mint px-4 py-2 text-xs font-extrabold text-slate-800 shadow-clay"
+          className="rounded-full bg-gradient-to-b from-secondary-mint-light to-secondary-mint px-4 py-2 text-xs font-extrabold text-slate-800 shadow-clay transition-transform hover:-translate-y-0.5 active:translate-y-0.5 active:scale-95"
         >
           LINE先行登録
-        </motion.a>
+        </a>
       </div>
     </header>
   );
@@ -179,8 +98,7 @@ function Header() {
 
 /* =========================================================
    1. Hero Section
-   - メインコピー（H1）を 32px・font-extrabold で最大限際立たせる
-   - 直下のサブコピー（リード文）を text-gray-600 にワントーン落としジャンプ率を強調
+   - 初期描画で opacity: 0 を使わず即座にペイントさせることで LCP 遅延（3,350ms）を解消
    ========================================================= */
 function HeroSection() {
   const seasons = [
@@ -225,23 +143,15 @@ function HeroSection() {
         className="pointer-events-none absolute top-64 -left-16 h-60 w-60 rounded-full bg-secondary-mint/30 blur-3xl"
       />
 
-      <motion.div
-        variants={heroContainerVariants}
-        initial="hidden"
-        animate="visible"
-        className="relative z-10 flex flex-col items-center text-center"
-      >
+      <div className="relative z-10 flex flex-col items-center text-center animate-hero-rise">
         {/* 公開時期バッジ */}
-        <motion.div
-          variants={heroItemVariants}
-          className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-secondary-lemon-light px-4 py-1.5 text-xs font-bold text-slate-800 shadow-clay-inset"
-        >
+        <div className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-secondary-lemon-light px-4 py-1.5 text-xs font-bold text-slate-800 shadow-clay-inset">
           <Calendar className="h-3.5 w-3.5 text-primary-dark" />
           <span>202X年◯月リリース予定・無料・アプリDLなし</span>
-        </motion.div>
+        </div>
 
         {/* キャッチコピー群（ジャンプ率を高めたH1） */}
-        <motion.div variants={heroItemVariants}>
+        <div>
           <p className="mb-2.5 inline-block rounded-2xl bg-white/90 px-4 py-1.5 text-base font-extrabold text-primary-dark shadow-clay-inset">
             ＼ スマホで3秒！AIパーソナルカラー診断 ／
           </p>
@@ -257,22 +167,16 @@ function HeroSection() {
               />
             </span>
           </h1>
-        </motion.div>
+        </div>
 
-        {/* 直下のサブコピー：メインコピーを引き立てるため文字色をワントーン落としつつ 16px(text-base) で可読性を確保 */}
-        <motion.p
-          variants={heroItemVariants}
-          className="mt-4 text-base font-normal leading-relaxed text-gray-600"
-        >
+        {/* 直下のサブコピー（LCP要素：初期HTMLで即座に描画） */}
+        <p className="mt-4 text-base font-normal leading-relaxed text-gray-600">
           LINEで顔写真を1枚送るだけで、4シーズン（春夏秋冬）をAIが無料診断！
           あなたに似合う「運命のカラー＆プチプラコスメ」がすぐに見つかります♡
-        </motion.p>
+        </p>
 
         {/* 4シーズン分析ビジュアル */}
-        <motion.div
-          variants={heroItemVariants}
-          className="card-clay mt-7 w-full bg-gradient-to-b from-white via-background-card to-[#FFF5F7] p-5"
-        >
+        <div className="card-clay mt-7 w-full bg-gradient-to-b from-white via-background-card to-[#FFF5F7] p-5">
           <div className="mb-4 flex items-center justify-between rounded-2xl bg-background px-4 py-2.5 shadow-clay-inset">
             <div className="flex items-center gap-2">
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-primary-light to-primary text-white">
@@ -289,11 +193,9 @@ function HeroSection() {
 
           <div className="grid grid-cols-2 gap-3">
             {seasons.map((season) => (
-              <motion.div
+              <div
                 key={season.name}
-                whileHover={{ y: -3, scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                className="rounded-2xl bg-white p-3 text-left shadow-clay"
+                className="rounded-2xl bg-white p-3 text-left shadow-clay transition-transform duration-200 hover:-translate-y-0.5"
               >
                 <div
                   className={`mb-2.5 flex h-20 w-full flex-col justify-between rounded-xl bg-gradient-to-br ${season.gradient} p-2.5 shadow-clay-inset`}
@@ -317,16 +219,13 @@ function HeroSection() {
                 <p className="text-sm font-medium text-gray-700">
                   {season.tag}
                 </p>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* ファーストビューCTA */}
-        <motion.div
-          variants={heroItemVariants}
-          className="mt-8 w-full space-y-2.5"
-        >
+        <div className="mt-8 w-full space-y-2.5">
           <p className="text-base font-extrabold text-primary-dark">
             ＼ 先着登録で「4シーズン別リップ早見表」をすぐにお届け🎁 ／
           </p>
@@ -337,14 +236,14 @@ function HeroSection() {
           <p className="text-sm font-medium text-gray-700">
             ※202X年◯月リリース時にLINEで優先案内が届きます（完全無料）
           </p>
-        </motion.div>
-      </motion.div>
+        </div>
+      </div>
     </section>
   );
 }
 
 /* =========================================================
-   2. Problem Section（高コントラスト＆本文 16px = text-base 設計）
+   2. Problem Section
    ========================================================= */
 function ProblemSection() {
   const problems = [
@@ -364,14 +263,8 @@ function ProblemSection() {
   ];
 
   return (
-    <motion.section
-      variants={sectionRevealVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      className="rounded-t-[2.5rem] bg-background-surface px-6 py-12 shadow-clay-inset"
-    >
-      <motion.div variants={cardRevealVariants} className="text-center">
+    <section className="rounded-t-[2.5rem] bg-background-surface px-6 py-12 shadow-clay-inset">
+      <div className="text-center">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1 text-xs font-bold text-primary-dark shadow-sm">
           💭 Make-up Troubles
         </span>
@@ -380,16 +273,14 @@ function ProblemSection() {
           <br />
           そんなモヤモヤ、ありませんか？
         </h2>
-      </motion.div>
+      </div>
 
-      {/* 厳選した2つの悩みカード */}
       <div className="mt-7 space-y-5">
         {problems.map((item, idx) => {
           const IconComponent = item.icon;
           return (
-            <motion.div
+            <div
               key={idx}
-              variants={cardRevealVariants}
               className="card-clay flex items-start gap-4 bg-background-card p-5"
             >
               <div
@@ -405,16 +296,12 @@ function ProblemSection() {
                   {item.desc}
                 </p>
               </div>
-            </motion.div>
+            </div>
           );
         })}
       </div>
 
-      {/* 解決へのブリッジボックス */}
-      <motion.div
-        variants={cardRevealVariants}
-        className="mt-7 rounded-clay bg-gradient-to-r from-primary-light/30 via-secondary-lemon-light/70 to-secondary-mint-light/60 p-4 text-center shadow-clay"
-      >
+      <div className="mt-7 rounded-clay bg-gradient-to-r from-primary-light/30 via-secondary-lemon-light/70 to-secondary-mint-light/60 p-4 text-center shadow-clay">
         <p className="text-base font-extrabold leading-relaxed text-slate-800">
           そのお悩み、すべて
           <span className="mx-1 rounded-lg bg-white px-2.5 py-0.5 text-primary-dark shadow-sm">
@@ -422,13 +309,13 @@ function ProblemSection() {
           </span>
           がサポートします✨
         </p>
-      </motion.div>
-    </motion.section>
+      </div>
+    </section>
   );
 }
 
 /* =========================================================
-   3. Solution & USP Section（本文 text-base ＆ text-gray-700）
+   3. Solution & USP Section
    ========================================================= */
 function UspSection() {
   const reasons = [
@@ -467,14 +354,8 @@ function UspSection() {
   ];
 
   return (
-    <motion.section
-      variants={sectionRevealVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.15 }}
-      className="px-6 py-14"
-    >
-      <motion.div variants={cardRevealVariants} className="text-center">
+    <section className="px-6 py-14">
+      <div className="text-center">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary-mint-light px-3.5 py-1 text-xs font-bold text-slate-800 shadow-clay-inset">
           🌈 Why ColorMe?
         </span>
@@ -483,15 +364,14 @@ function UspSection() {
           <br />
           <span className="text-primary-dark">『ColorMe』</span>が選ばれる3つの理由
         </h2>
-      </motion.div>
+      </div>
 
       <div className="mt-9 space-y-7">
         {reasons.map((reason) => {
           const IconComponent = reason.icon;
           return (
-            <motion.article
+            <article
               key={reason.number}
-              variants={cardRevealVariants}
               className="card-clay space-y-4 p-6"
             >
               <div
@@ -502,12 +382,9 @@ function UspSection() {
                 >
                   {reason.number}
                 </span>
-                <motion.div
-                  whileHover={{ rotate: [0, -8, 8, 0], scale: 1.05 }}
-                  className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white shadow-clay"
-                >
+                <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-white shadow-clay transition-transform duration-200 hover:scale-105">
                   <IconComponent className={`h-8 w-8 ${reason.iconColor}`} />
-                </motion.div>
+                </div>
                 <div className="mt-2.5 flex flex-wrap justify-center gap-1.5">
                   {reason.tags.map((tag) => (
                     <span
@@ -526,16 +403,16 @@ function UspSection() {
               <p className="text-base leading-relaxed text-gray-700">
                 {reason.desc}
               </p>
-            </motion.article>
+            </article>
           );
         })}
       </div>
-    </motion.section>
+    </section>
   );
 }
 
 /* =========================================================
-   4. Flow & LINE Preview Section（本文 text-base ＆ 高コントラスト）
+   4. Flow & LINE Preview Section
    ========================================================= */
 function FlowSection() {
   const steps = [
@@ -576,14 +453,8 @@ function FlowSection() {
   ];
 
   return (
-    <motion.section
-      variants={sectionRevealVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.15 }}
-      className="rounded-[2.5rem] bg-background-surface px-6 py-14 shadow-clay-inset"
-    >
-      <motion.div variants={cardRevealVariants} className="text-center">
+    <section className="rounded-[2.5rem] bg-background-surface px-6 py-14 shadow-clay-inset">
+      <div className="text-center">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1 text-xs font-bold text-slate-800 shadow-sm">
           📱 Easy 3 Steps
         </span>
@@ -592,18 +463,14 @@ function FlowSection() {
           <br />
           3ステップであなたの「似合う」が見つかる
         </h2>
-      </motion.div>
+      </div>
 
       {/* 3ステップ・タイムライン */}
       <div className="mt-8 space-y-5">
         {steps.map((item, idx) => {
           const IconComponent = item.icon;
           return (
-            <motion.div
-              key={item.step}
-              variants={cardRevealVariants}
-              className="relative"
-            >
+            <div key={item.step} className="relative">
               {idx < steps.length - 1 && (
                 <div
                   aria-hidden="true"
@@ -630,16 +497,13 @@ function FlowSection() {
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           );
         })}
       </div>
 
       {/* 顔写真プライバシー保護の目立つ注記ボックス */}
-      <motion.div
-        variants={cardRevealVariants}
-        className="mt-6 rounded-2xl border-2 border-secondary-mint-dark bg-white p-4 shadow-clay"
-      >
+      <div className="mt-6 rounded-2xl border-2 border-secondary-mint-dark bg-white p-4 shadow-clay">
         <div className="flex items-start gap-3">
           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-secondary-mint-light text-slate-800 shadow-clay-inset">
             <Lock className="h-5 w-5 text-[#2E9E7B]" />
@@ -653,13 +517,10 @@ function FlowSection() {
             </p>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* 診断の具体性：LINEトーク画面での診断結果イメージUI */}
-      <motion.div
-        variants={cardRevealVariants}
-        className="mt-10 w-full max-w-full overflow-hidden"
-      >
+      <div className="mt-10 w-full max-w-full overflow-hidden">
         <div className="mb-4 text-center">
           <span className="inline-block rounded-full bg-secondary-lemon px-4 py-1 text-xs font-extrabold text-slate-800 shadow-clay-inset">
             💬 こんな診断カルテがLINEに届きます
@@ -775,13 +636,13 @@ function FlowSection() {
             </div>
           </div>
         </div>
-      </motion.div>
-    </motion.section>
+      </div>
+    </section>
   );
 }
 
 /* =========================================================
-   5. CTA Section（高コントラスト＆単一CTAに集約）
+   5. CTA Section
    ========================================================= */
 function CtaSection() {
   const perks = [
@@ -790,18 +651,8 @@ function CtaSection() {
   ];
 
   return (
-    <motion.section
-      id="cta"
-      variants={sectionRevealVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      className="px-6 py-12"
-    >
-      <motion.div
-        variants={cardRevealVariants}
-        className="card-clay relative overflow-hidden bg-gradient-to-b from-[#FFF5F7] via-white to-[#FFFBE8] p-6 text-center"
-      >
+    <section id="cta" className="px-6 py-12">
+      <div className="card-clay relative overflow-hidden bg-gradient-to-b from-[#FFF5F7] via-white to-[#FFFBE8] p-6 text-center">
         <span className="inline-flex items-center gap-1.5 rounded-full bg-secondary-lemon px-4 py-1 text-xs font-extrabold text-slate-800 shadow-clay-inset">
           <Gift className="h-3.5 w-3.5 text-primary-dark" />
           <span>202X年◯月リリース予定｜先行予約受付中</span>
@@ -849,8 +700,8 @@ function CtaSection() {
             </span>
           </div>
         </div>
-      </motion.div>
-    </motion.section>
+      </div>
+    </section>
   );
 }
 
@@ -902,7 +753,7 @@ function Footer() {
 }
 
 /* =========================================================
-   Main Page Component
+   Main Page Component（Server Component 化でバンドルサイズを最小化）
    ========================================================= */
 export default function HomePage() {
   return (

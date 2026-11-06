@@ -9,6 +9,8 @@
 # next.js
 /.next/
 /out/
+/lp_data/
+lp_data.zip
 
 # production
 /build

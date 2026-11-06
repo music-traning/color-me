@@ -1,12 +1,5 @@
 import type { Metadata } from "next";
-import { Zen_Maru_Gothic } from "next/font/google";
 import "./globals.css";
-
-const zenMaruGothic = Zen_Maru_Gothic({
-  weight: ["400", "500", "700", "900"],
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "ColorMe（カラーミー）| AIパーソナルカラー診断",
@@ -21,10 +14,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
-      {/* PC表示時は外側に淡いグラデーション背景を敷き、中央の max-w-md コンテナを際立たせる */}
-      <body
-        className={`${zenMaruGothic.className} min-h-screen bg-[#EAE6EE] text-slate-800 antialiased`}
-      >
+      {/* Webフォントの大量プリロード（約6.5MB）を廃止し、OS標準の丸ゴシック・ゴシック体で即座に描画 */}
+      <body className="min-h-screen bg-[#EAE6EE] font-sans text-slate-800 antialiased">
         <div className="mobile-shell">{children}</div>
       </body>
     </html>
